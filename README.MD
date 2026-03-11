@@ -33,3 +33,12 @@ API REST para o cardápio online da padaria Paraíso do Pão.
 - GET /api/pedidos — lista todos os pedidos
 - POST /api/pedidos — cria novo pedido
 - PATCH /api/pedidos/:id/status — atualiza status do pedido
+
+## Arquitetura do Sistema
+
+![Diagrama de Caso de Uso](./diagrama.png)
+
+### Camadas da aplicação
+- **Routes** — recebe as requisições HTTP e repassa para os Services
+- **Services** — contém todas as regras de negócio
+- **Models** — define a estrutura dos dados e acessa o MongoDB
