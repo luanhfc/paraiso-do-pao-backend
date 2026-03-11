@@ -25,6 +25,10 @@ const produtoSchema = new mongoose.Schema({
     disponivel: {
         type: Boolean,
         default: true
+    },
+    restrito: {           // campo novo
+    type: Boolean,
+    default: false    // por padrão nenhum produto é restrito
     }
 }, { timestamps: true });
 

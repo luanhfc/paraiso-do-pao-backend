@@ -2,18 +2,30 @@ const Produto = require('../models/produto');
 
 const ProdutoService = {
 
-    async listarTodos() {
-        return await Produto.find({ disponivel: true });
+    async listarTodos(usuario) {
+        const filtro = { disponivel: true };
+
+        if (!usuario || usuario.idade < 18) {
+            filtro.restrito = false;
+        }
+
+        return await Produto.find(filtro);
     },
 
-    async listarPorCategoria(categoria) {
+    async listarPorCategoria(categoria, usuario) {
         const categoriasValidas = ['paes', 'bolos', 'salgados'];
 
         if (!categoriasValidas.includes(categoria)) {
             throw new Error('Categoria inválida!');
         }
 
-        return await Produto.find({ categoria, disponivel: true });
+        const filtro = { categoria, disponivel: true };
+
+        if (!usuario || usuario.idade < 18) {
+            filtro.restrito = false;
+        }
+
+        return await Produto.find(filtro);
     },
 
     async cadastrar(dados) {

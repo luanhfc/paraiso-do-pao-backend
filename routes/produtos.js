@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const ProdutoService = require('../services/ProdutoService');
+const ProdutoService = require('../services/produtoService');
+const Produto = require('../models/produto');
 
 router.get('/', async (req, res) => {
     try {
-        const produtos = await ProdutoService.listarTodos();
+        const usuario = req.query.idade ? { idade: Number(req.query.idade) } : null;
+        const produtos = await ProdutoService.listarTodos(usuario);
         res.json(produtos);
     } catch (err) {
         res.status(500).json({ erro: err.message });
@@ -13,7 +15,9 @@ router.get('/', async (req, res) => {
 
 router.get('/categoria/:categoria', async (req, res) => {
     try {
-        const produtos = await ProdutoService.listarPorCategoria(req.params.categoria);
+        // pega a idade da query string ex: /api/produtos/categoria/paes?idade=16
+        const usuario = req.query.idade ? { idade: Number(req.query.idade) } : null;
+        const produtos = await ProdutoService.listarPorCategoria(req.params.categoria, usuario);
         res.json(produtos);
     } catch (err) {
         res.status(400).json({ erro: err.message });
@@ -35,6 +39,19 @@ router.delete('/:id', async (req, res) => {
         res.json(resultado);
     } catch (err) {
         res.status(404).json({ erro: err.message });
+    }
+});
+
+// rota temporária para corrigir produtos sem campo restrito
+router.patch('/corrigir-restrito', async (req, res) => {
+    try {
+        await Produto.updateMany(
+            { restrito: { $exists: false } },
+            { $set: { restrito: false } }
+        );
+        res.json({ mensagem: 'Produtos corrigidos com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ erro: err.message });
     }
 });
 
